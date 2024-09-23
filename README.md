@@ -10,8 +10,10 @@
 
 #### Chapter3. 자바스크립트 개발 환경과 실행 방법
 
+#### Chapter4. 변수
+
 <details>
-<summary>Chapter4. 변수</summary>
+<summary>펼쳐보기</summary>
 <div markdown="1">
 
 ### 4.1 변수란?
@@ -101,9 +103,10 @@ console.log(score); //1
 
 #### Chapter11. 원시 값과 객체의 비교
 
+#### Chapter13. 스코프
 
 <details>
-<summary>Chapter13. 스코프</summary>
+<summary>펼쳐보기</summary>
 <div markdown="1">
 
 
