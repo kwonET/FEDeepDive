@@ -10,6 +10,24 @@
 
 #### Chapter3. 자바스크립트 개발 환경과 실행 방법
 
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+### 3.1 자바스크립트 실행 환경
+
+
+- js는 브라우저 환경/ Node.js 환경에서 동작한다.
+	- 브라우저 환경 : js를 실행해 웹을 브라우저 화면에 렌더링하는 게 목적 / 따라서 클라이언트 사이드 Web API (ex. DOM API)를 기본 제공한다.
+	- Node.js : 브라우저 외부에서 js 실행 환경을 제공하는 게 목적 / 파일 시스템(고유의 api)을 제공, 서버 단이기 때문
+
+### 3.3 Node.js
+- node.js : 크롬 v8 js 엔진으로 빌드된 js 런타임 환경
+- npm : js 패키지 매니저. node.js에서 사용할 수 있는 모듈을 패키지화해서 모아둔 저장소이자, 패키지 설치와 관리를 위한 cli이다.
+
+</div>
+</details>
+
 #### Chapter4. 변수
 
 <details>
