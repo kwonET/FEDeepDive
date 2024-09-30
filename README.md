@@ -374,7 +374,7 @@ function Circle(radius){
 // new 연산자 없이 생성자 함수를 호출해도 new.target을 통해 생성자 함수로 호출된다.
 const circle = Circle(5);
 console.log(circle.getDiameter()); // 올바른 값 5 호출
-
+```
 
 </div>
 </details>
