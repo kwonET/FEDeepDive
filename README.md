@@ -560,7 +560,7 @@ const me = new Person("Lee");
 	- this 바인딩 : 함수 호출 시점에 결정
 
 #### 22.2.1 일반 함수 호출
-- this에는 전역 객체가 바인딩된다. (중첩 함수도 마찬가지)
+- this에는 `전역 객체`가 바인딩된다. (중첩 함수도 마찬가지)
 
 ```js
 // var 키워드로 선언한 전역 변수 value는 전역 객체 프로퍼티이다.(const는 아님)
@@ -628,7 +628,7 @@ obj.foo();
 
 
 #### 22.2.2 메서드 호출
-- 메서드 내부의 this에는 메서드를 호출한 객체(. 앞에 있는 객체)가 바인딩된다. (소유한 객체가 아님을 주의하자.)
+- 메서드 내부의 this에는 `메서드를 호출한 객체`(. 앞에 있는 객체)가 바인딩된다. (소유한 객체가 아님을 주의하자.)
 
 ```js
 const person = {
@@ -683,11 +683,12 @@ console.log(Person.prototype.getName()); //Kim
 
 
 #### 22.2.3 생성자 함수 호출
-- 생성자 함수(객체를 생성하는 함수) 내부의 this에는 생성자 함수가 미래에 생성할 인스턴스가 바인딩된다.
+- 생성자 함수(객체를 생성하는 함수) 내부의 this에는 `생성자 함수가 미래에 생성할 인스턴스`가 바인딩된다.
 
 
 #### 22.2.4 Function.prototype.apply / call / bind 메서드에 의한 간접 호출
 - Function.prototype의 메서드 apply, call, bind
+- `첫번째 인수로 전달된 객체`가 this에 바인딩된다.
  
 ```js
 function getThisBinding(){
@@ -710,7 +711,52 @@ console.log(getThisBinding.call(thisArg, 1,2,3));
 - apply, call 메서드의 본질적인 기능은 함수를 호출하는 것이다.
 - 또한 arguments와 같은 유사 배열 객체에 배열 메서드를 사용할 때 사용하기도 한다.
 
+```js
+function getThisBinding(){
+	return this;
+}
+
+//this로 사용할 객체
+const thisArg = { a : 1 }
+
+// bind 메서드는 첫번째 인수로 전달한 thisArg로 this 바인딩이 교체된
+// getThisBinding 함수를 새롭게 생성해 반환한다.
+console.log(getThisBinding.bind(thisArg)) // getThisBinding
+
+// bind 메서드는 함수를 호출하지는 않으므로 명시적으로 호출해야한다.
+console.log(getThisBinding.bind(thisArg)()); // {a:1}
+```
 - bind는 함수를 호출하지 않는다. 첫번째 인자값으로 전달한 값으로 this 바인딩이 교체된 함수를 새롭게 생성해 반환한다.
+
+- 메서드의 this와 메서드 내부의 중첩/콜백 함수의 this가 불일치되는 문제를 해결할 수 있다.
+```js
+const person = {
+  name:"Lee",
+  foo(callback){
+    setTimeout(callback, 100); // this는 foo를 호출한 person 객체를 가리킨다.
+  }
+};
+
+person.foo(function(){
+  console.log(`Hi! my name is ${this.name}`) // 그러나 콜백함수가 일반함수로 호출된 시점에서는 this는 전역 객체를 가리킨다
+  // 따라서 undefined 호출
+})
+```
+- bind를 활용해 아래처럼 사용할 수 있다.
+```js
+const person = {
+  name:"Lee",
+  foo(callback){
+    setTimeout(callback.bind(this), 100); // bind 메서드로 callback 함수 내부의 this 바인딩을 전달
+  }
+};
+
+person.foo(function(){
+  console.log(`Hi! my name is ${this.name}`) // Hi! my name is Lee
+})
+```
+
+
 </div>
 </details>
 
