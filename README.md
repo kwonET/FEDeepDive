@@ -379,9 +379,365 @@ console.log(circle.getDiameter()); // 올바른 값 5 호출
 </div>
 </details>
 
+#### Chapter18. 함수와 일급 객체
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+### 18.2 함수 객체의 프로퍼티
+
+#### arguments 프로퍼티
+
+- argument 객체 : length 프로퍼티가 있는 유사 배열 객체 (배열 메서드는 사용 불가, 간접 호출 사용)
+
+```js
+function sum(){
+	// argument 객체를 배열로 반환
+	const array = Array.prototype.slice.call(argument);
+	return array.reduce(function(pre, cur){
+		return pre+cur;
+	},0);
+}
+
+console.log(sum(1,2)); //3
+
+//ES6 Rest parameter
+function sum(...args){
+	return args.reduce((pre, cur)=> pre + cur, 0);
+}
+console.log(sum(1,2,3,4,5)); //15
+```
+
+#### __proto__ 접근자 프로퍼티
+- [[Prototype]] 내부 슬롯이 가리키는 프로토타입 객체에 접근하기 위해 사용하는 접근자 프로퍼티
+
+```js
+const obj = { a:1 };
+
+// 객체 리터럴 방식으로 생성한 객체의 프로토타입 객체는 Object.prototype
+console.log(obj.__proto__ === Object.prototype); // true
+
+console.log(obj.hasOwnProperty('a')); //true
+```
+
+#### prototype 프로퍼티
+- 생성자 함수가 생성할 인스턴스의 프로토타입 객체를 가리킴
+
+```js
+// 함수 객체는 prototype 프로퍼티를 소유한다.
+(function(){}).hasOwnProperty('prototype') //true
+// 일반 객체는 prototype 프로퍼티를 소유하지 않는다.
+({}).hasOwnProperty('prototype') //false
+```
+
+</div>
+</details>
+
+
 ## 3주차
 
+#### Chapter19 프로토타입
+ 
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+- 원시 타입을 제외하고는 모두 객체이다. (함수, 배열, 정규표현식)
+
+### 19.1 객체 지향 프로그래밍
+
+#### arguments 프로퍼티
+
+### 19.2 상속과 프로포타입
+
+### 19.3 프로토타입 객체
+#### 19.3.1 __proto__ 접근자 프로퍼티
+
+### 19.4 리터럴 표기법에 의해 생성된 객체의 생성자 함수와 프로토타입
+### 19.5 프로토타입의 생성 시점
+### 19.6 객체 생성 방식과 프로토타입의 결정
+### 19.7 프로토타입 체인
+### 19.8 오버라이딩과 프로퍼티 섀도잉
+### 19.9 프로토타입의 교체
+### 19.10 instanceof 연산자
+### 19.11 직접 상속
+### 19.12 정적 프로퍼티 / 메서드
+### 19.13 프로퍼티 존재 확인
+### 19.14 프로퍼티 열거
+
+</div>
+</details>
+
+
+#### Chapter20 strict mode
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+
+</div>
+</details>
+
+#### Chapter21
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+
+
+</div>
+</details>
+
+#### Chapter22 this
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+### 22.1 this 키워드
+- 메서드는 자신이 속한 객체의 상태, property를 참조할 수 있어야 한다.
+- 이를 위해 자신이 속한 객체를 가리키는 식별자를 참조해야한다.
+
+```js
+function Circle(radius){
+	// 이 시점에서는 생성자 함수 자신이 생성할 인스턴스를 가리키는 식별자를 알 수 없다.
+	????.radius = radius;
+}
+
+Circle.prototype.getDiameter = function(){
+	// 이 시점에는 생성자 함수 자신이 생성할 인스턴스를 가리키는 식별자를 알 수 없다
+	return 2 * ????.radius;
+}
+
+// 생성자 함수로 인스턴스를 생성하려면 먼저 생성자 함수를 정의해야한다.
+const circle = new Circle(5);
+```
+- 생성자 함수를 정의하는 시점에서는 인스턴스를 가리키는 식별자를 알 수 없다.
+
+- this : 자신이 속한 객체 또는 자신이 생성할 인스턴스를 가리키는 자기 참조 변수 (self-referencing variable)
+	- this 바인딩은 함수 호출 방식에 의해 동적으로 결정된다.
+
+```js
+// 전역 this는 전역 객체 window를 가리킨다.
+console.log(this); // window
+
+function square(number){
+	// 일반 함수 내부에서 this는 전역 객체 window를 가리킨다.
+	console.log(this); // window
+	return number * number;
+}
+square(2);
+
+const person = {
+	name:'Lee',
+	getName(){
+		// 메서드 내부에서 this는 메서드를 호출한 객체를 가리킨다.
+		console.log(this); // {name:"Lee", getName: f}
+		return this.name;
+	}
+}
+console.log(person.getName()); //Lee
+
+
+function Person(name){
+	this.name = name;
+	// 생성자 함수 내부에서 this는 생성자 함수가 생성할 인스턴스를 가리킨다. 
+	console.log(this); // Person {name:"Lee"}
+}
+const me = new Person("Lee"); 
+```
+
+- this 바인딩은 함수가 호출되는 방식에 따라 결정된다.
+- strict mode가 적용된 일반 함수 내에서는 this에 undefined가 바인딩된다.
+
+
+### 22.2 함수 호출 방식과 this 바인딩
+ * 렉시컬 스코프 vs this 바인딩 결정 시기
+	- 렉시컬 스코프 (함수의 상위 스코프를 결정) : 함수 정의가 평가 되어 함수 객체가 생성되는 시점
+	- this 바인딩 : 함수 호출 시점에 결정
+
+#### 22.2.1 일반 함수 호출
+- this에는 전역 객체가 바인딩된다. (중첩 함수도 마찬가지)
+
+```js
+// var 키워드로 선언한 전역 변수 value는 전역 객체 프로퍼티이다.(const는 아님)
+var value = 1;
+
+const obj = {
+	value : 100,
+	foo(){
+		console.log("foo's this:", this); // {value:100, foo:f}
+		console.log("foo's this.value:", this.value); // 100
+
+		// 메서드 내에서 정의한 중첩 함수
+		function bar(){
+			console.log("bar's this:", this); //window
+			console.log("bar's this.value:", this.value); //1
+		}
+		
+		// 메서드 내에서 정의한 중첩 함수도 일반 함수로 호출되면 중첩 함수 내부의 this에는 전역 객체가 바인딩된다.
+	}
+}
+
+obj.foo();
+```
+- 콜백함수가 일반함수로 호출되면, 콜백 함수 내부에서 this도 전역 객체가 바인딩된다.
+
+
+```js
+var value = 1;
+
+const obj = {
+	value : 100,
+
+	// 방법 1
+	foo(){
+		// this 바인딩을 변수 that에 할당한다.
+		const that = this;
+
+		// 콜백 함수 내부에서 this 대신 that을 참조한다.
+		setTimeout(function(){
+			console.log(that.value); // 100
+		}, 100);
+	}
+
+	// 방법 2
+	foo(){
+		// 콜백 함수에 명시적으로 this 바인딩
+		setTimeout(function(){
+			console.log(this.value); // 100
+		}.bind(this), 100);
+	}
+
+	// 방법 3
+	foo(){
+		// 화살표 함수 내부의 this는 상위 스코프의 this를 가리킨다.
+		setTimeout(()=>{
+			console.log(this.value); // 100
+		}, 100);
+	}
+}
+
+obj.foo();
+```
+
+- 중첩함수, 콜백함수는 외부 함수를 돕는 헬퍼 역할을 하고, 일부 로직을 대체한다. 따라서 콜백 함수의 this 바인딩을 메서드의 this 바인딩과 일치시키기 위해 위와 같이 할 수 있다.
+
+
+#### 22.2.2 메서드 호출
+- 메서드 내부의 this에는 메서드를 호출한 객체(. 앞에 있는 객체)가 바인딩된다. (소유한 객체가 아님을 주의하자.)
+
+```js
+const person = {
+	name : "Lee",
+	getName(){
+		// 메서드 내부의 this는 메서드를 호출한 객체에 바인딩된다.
+		return this.name;
+	}
+}
+// 메서드 getName을 호출한 객체는 person이다.
+console.log(person.getName());
+```
+- 메서드는 프로퍼티에 바인딩된 함수이다. 즉, getName 프로퍼티가 가리키는 함수 객체는 person 객체에 포함된 것이 아닌 독립적으로 존대한다. 
+	* person 객체의 getName 프로퍼티가 함수 객체를 point하고 있는 개념
+
+- 따라서 메서드를 자유롭게 다른 곳에 할당할 수 있음 (객체 메서드, 일반 변수 등)
+```js
+const anotherPerson = {
+	name: 'Kim'
+};
+//getName 메서드를 anotherPerson 객체의 메서드로 할당
+
+// getName 메서드를 호출한 객체는 anotherPerson
+console.log(anotherPerson.getName()); // Kim
+
+// getName 메서드를 변수에 할당
+const getName = person.getName;
+
+// getName 메서드를 일반 함수로 호출
+console.log(getName()); // ''
+// this.name은 window.name과 같음
+```
+
+```js
+function Person(name){
+	this.name = name;
+}
+Person.prototype.getName = function(){
+	return this.name;
+}
+const me = new Person("Lee");
+
+// getName 메서드를 호출한 객체는 me
+console.log(me.getName()); //Lee
+
+Person.prototype.name = "Kim";
+
+//getName 메서드를 호출한 객체는 Person.prototype
+console.log(Person.prototype.getName()); //Kim
+```
+- Person.prototype도 객체이므로 메서드를 직접 호출 가능하다.
+
+
+#### 22.2.3 생성자 함수 호출
+- 생성자 함수(객체를 생성하는 함수) 내부의 this에는 생성자 함수가 미래에 생성할 인스턴스가 바인딩된다.
+
+
+#### 22.2.4 Function.prototype.apply / call / bind 메서드에 의한 간접 호출
+- Function.prototype의 메서드 apply, call, bind
+ 
+```js
+function getThisBinding(){
+	console.log(arguments);
+	return this;
+}
+
+//this 로 사용할 객체
+const thisArg = { a:1 };
+
+//getThisBinding 함수를 호출하면서 인수로 전달한 객체를 함수의 this에 바인딩한다.
+// apply 메서드는 호출할 함수의 인수를 배열로 묶어 전달한다.
+console.log(getThisBinding.apply(thisArg, [1,2,3]));
+// Arguments(3) [1,2,3, callee : f, Symbol(Symbol.iterator): f]
+
+// call 메서드는 호출할 함수의 인수를 쉼표로 구분한 리스트 형식으로 전달한다.
+console.log(getThisBinding.call(thisArg, 1,2,3));
+// Arguments(3) [1,2,3, callee : f, Symbol(Symbol.iterator): f]
+```
+- apply, call 메서드의 본질적인 기능은 함수를 호출하는 것이다.
+- 또한 arguments와 같은 유사 배열 객체에 배열 메서드를 사용할 때 사용하기도 한다.
+
+- bind는 함수를 호출하지 않는다. 첫번째 인자값으로 전달한 값으로 this 바인딩이 교체된 함수를 새롭게 생성해 반환한다.
+</div>
+</details>
+
+#### Chapter23
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+
+
+</div>
+</details>
+
+
 ## 4주차
+
+#### Chapter24
+
+<details>
+<summary>펼쳐보기</summary>
+<div markdown="1">
+
+
+
+</div>
+</details>
 
 ## 5주차
 
